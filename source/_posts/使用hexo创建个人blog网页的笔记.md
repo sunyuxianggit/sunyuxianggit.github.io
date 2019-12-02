@@ -1,0 +1,126 @@
+---
+title: 使用hexo创建个人blog网页的笔记
+date: 2019-12-01 22:53:13
+tags: 个人笔记
+---
+
+#  使用hexo创建个人blog网页的笔记
+
+
+
+## 安装支持软件
+
+1. 下载并安装node.js.https://nodejs.org/en/
+
+2. 下载好可以在cmd里面通过查看版本号来确认安装成功。
+
+   ```
+   $ node -v #参看node版本号
+   $ npm -v # 查看npm包管理器版本号
+   ```
+
+3. 由于npm国内下载包速度太慢，所以可以里面npm安装一个cnpm（使用淘宝源）加快速度，不需要可以跳过，同理可以通过查看版本号确认安装成功。
+
+   ```
+   $ npm install -g cnpm --registry="https://registry.npm.taobao.org" #-g表示全局安装
+   $ cnpm -v#参看cnpm 版本号
+   ```
+
+4. 使用cnpm 安装hexo，同理可以通过查看版本号确认安装成功。
+
+   ```
+   $ cnpm install -g hexo-cli #全局安装hexo
+   $ hexo -v #参看hexo版本号
+   ```
+
+## 使用hexo搭建博客
+
+1. 首先建立一个空的文件夹blog
+
+2. 命令行进入blog文件夹
+
+3. 使用hexo生成博客
+
+   ```
+   $ hexo init #生成博客
+   ```
+
+4. 使用hexo server进行本地预览博客，预览完成后Ctrl+C退出预览
+
+   ```
+   $ hexo s#本地预览博客
+   ```
+
+5. 使用hexo new 新建文章
+
+   ```
+   $ hexo n "文章名"
+   ```
+
+6. 先使用hexo clean 清除已经创建的页面，在使用hexo generated生成页面，建议生成先进行本地预览。
+
+   ```
+   $ hexo clean #清除
+   $ hexo g #生成
+   ```
+
+## 如何把博客布置到github上
+
+1. 首先在github自己的账号内新建仓库，注意仓库名就是你的域名。仓库名必须是 [账户名.github.io]
+
+2. 安装git并在git下设置用户名和邮箱
+
+   ```
+   git config --global user.name [username]
+   git config --global user.email [email]
+   ```
+
+3. 在bolg文件夹下安装git部署插件
+
+   ```
+   $ cnpm install --save hexo-deployer-git
+   ```
+
+4. 设置一下bolg文件夹的_config.yml，注意每个冒号后面有空格
+
+   ```
+   # Deployment
+   ## Docs: https://hexo.io/docs/deployment.html
+   deploy:
+     type: git 
+     repo: https://github.com/sunyuxianggit/sunyuxianggit.github.io.git
+     branch: master
+   ```
+
+5. 部署到github，中间需要输入github的账号密码。
+
+   ```
+   $ hexo d 
+   ```
+
+## 日常更新文章
+
+1. 命令行进入blog文件夹使用hexo new 新建文章
+2. 使用hexo clean清除老页面，然后在使用hexo generated生成页面
+3. 使用hexo server本地预览没有问题后，使用 hexo deploy部署到github
+
+## 如何更换主题
+
+1. 命令行进入blog
+
+2. 使用git clone 功能 clone喜欢的主题
+
+   ```
+   $ git clone https://github.com/litten/hexo-theme-yilia.git themes/yilia
+   ```
+
+3. 修改配置文件
+
+   ```
+   # Extensions
+   ## Plugins: https://hexo.io/plugins/
+   ## Themes: https://hexo.io/themes/
+   theme: yilia
+   ```
+
+   
