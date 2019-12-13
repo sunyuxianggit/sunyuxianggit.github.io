@@ -14,6 +14,7 @@ tags:
    $ git config --global user.name #查看用户名
    $ git config --global user.email #查看邮箱
    ```
+<!-- more -->
 
 2. 使用流程命令
 
