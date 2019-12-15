@@ -139,4 +139,6 @@ tags: 个人笔记
 
 ## 多台设备同步管理
 
-1. 
+1. 原创建博客设备把源文件上传到GitHub，上传时注意检查所有.gitignore文件忽略情况和把node_modules文件夹删掉（因为内部文件名太长，上传的话git报错）.
+2. 另一台电脑上将源代码clone下来之后，直接执行 ```cnpm install```把node_modules安装回来.
+3. 然后```hexo s```正常使用.
