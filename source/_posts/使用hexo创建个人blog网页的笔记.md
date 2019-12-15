@@ -4,10 +4,6 @@ date: 2019-12-01 22:53:13
 tags: 个人笔记
 ---
 
-#  使用hexo创建个人blog网页的笔记
-
-
-
 ## 安装支持软件
 
 1. 下载并安装node.js.https://nodejs.org/en/
@@ -18,7 +14,7 @@ tags: 个人笔记
    $ node -v #参看node版本号
    $ npm -v # 查看npm包管理器版本号
    ```
-
+<!--more-->
 3. 由于npm国内下载包速度太慢，所以可以里面npm安装一个cnpm（使用淘宝源）加快速度，不需要可以跳过，同理可以通过查看版本号确认安装成功。
 
    ```
@@ -32,6 +28,8 @@ tags: 个人笔记
    $ cnpm install -g hexo-cli #全局安装hexo
    $ hexo -v #参看hexo版本号
    ```
+
+
 
 ## 使用hexo搭建博客
 
@@ -95,14 +93,29 @@ tags: 个人笔记
 5. 部署到github，中间需要输入github的账号密码。
 
    ```
-   $ hexo d 
+   $ hexo doploy#部署到GitHub
    ```
+   
+6. 常见错误：
+
+   fatal: in unpopulated submodule '.deploy_git'
+
+   这种情况可以先安装下相关的依赖：
+
+   ```
+   $ npm install hexo-deployer-git –save
+   $ rm -rf .deploy_git#删掉
+   $ hexo g
+   $ hexo d#重新生成和部署
+   ```
+
+   
 
 ## 日常更新文章
 
-1. 命令行进入blog文件夹使用hexo new 新建文章
-2. 使用hexo clean清除老页面，然后在使用hexo generated生成页面
-3. 使用hexo server本地预览没有问题后，使用 hexo deploy部署到github
+1. 命令行进入blog文件夹使用```$ hexo new``` 新建文章
+2. 使用```$ hexo clean```清除老页面，然后在使用```$ hexo generated```生成页面
+3. 使用```$ hexo server```本地预览没有问题后，使用 ```$ hexo deploy```部署到Github
 
 ## 如何更换主题
 
@@ -120,7 +133,10 @@ tags: 个人笔记
    # Extensions
    ## Plugins: https://hexo.io/plugins/
    ## Themes: https://hexo.io/themes/
-   theme: yilia
+   theme: yilia#这里
    ```
 
-   
+
+## 多台设备同步管理
+
+1. 
