@@ -139,6 +139,39 @@
   </entry>
   
   <entry>
+    <title>Maya卡顿优化</title>
+    <link href="http://yoursite.com/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/"/>
+    <id>http://yoursite.com/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/</id>
+    <published>2020-03-09T15:50:34.000Z</published>
+    <updated>2020-03-10T10:49:41.131Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="针对美术制作的-Maya-卡顿优化"><a href="#针对美术制作的-Maya-卡顿优化" class="headerlink" title="针对美术制作的 Maya 卡顿优化"></a>针对美术制作的 Maya 卡顿优化</h1><h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><h3 id="信息获取"><a href="#信息获取" class="headerlink" title="信息获取"></a>信息获取</h3><ul><li>解释分析器</li><li>求值工具包</li></ul><h2 id="GPU"><a href="#GPU" class="headerlink" title="GPU"></a>GPU</h2><h3 id="信息获取-1"><a href="#信息获取-1" class="headerlink" title="信息获取"></a>信息获取</h3><ul><li><p>Viewport 2.0,必须拥有正确的图形配置和图形驱动程序版本。有关 Maya 认证显卡和最新驱动程序版本的信息：</p><p><a href="https://knowledge.autodesk.com/certified-graphics-hardware" target="_blank" rel="noopener">https://knowledge.autodesk.com/certified-graphics-hardware</a></p></li></ul><ul><li><p>GPU 内存</p><p>对于包含大量纹理、几何体或缓存动画的场景，请务必记下显卡上可用的 GPU RAM 量，如果 GPU RAM 使用量非常接近显卡的 GPU RAM 限制，纹理可能无法加载，并且场景可能显示为着色模式。此时将显示一条错误信息，指明已超出纹理 RAM 限制并建议您减小“最大纹理分辨率”(Max Texture Resolution)钳制。</p><p>查看 GPU 内存使用情况（以 MB 为单位），请使用Mel命令 </p><a id="more"></a><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ogs -gpu</span><br></pre></td></tr></table></figure><p>如图：</p><p><img src="/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/1558686550786.png" alt="1558686550786"></p></li><li><p>查看卡的 GPU RAM 限制，请参见“Maya 的输出窗口”(Output Window of Maya)。</p><p><img src="/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/1558686723618.png" alt="图片1"></p></li></ul><h3 id="如何优化"><a href="#如何优化" class="headerlink" title="如何优化"></a>如何优化</h3><ul><li><p>尽量关闭屏幕空间环境光遮挡、多重采样抗锯齿、运动模糊。</p></li><li><p>不使用复杂的Shader（例如复杂的 ShaderFX 网络）或大量使用 DirectX 11 ubershader 的场景。</p></li><li><p>禁用灯光和灯光阴影。</p></li><li><p>GPU 实例化可减少 GPU 内存使用量。</p><p><img src="/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/1558687101606.png" alt="图片2"></p></li><li><p>减小摄影机的远剪裁距离，以便在视口中显示较少的几何体</p></li><li><p>隐藏无需显示的对象</p></li><li><p>卸载引用文件</p></li><li><p>将对象更改为Bounding Box模式</p></li><li><p>关闭多个Maya，同时运行 Maya 和其他 3D 程序，需要额外的 GPU 内存。</p></li><li><p>可以考虑使用GPU缓存工作流程</p><p><img src="/2020/03/09/Maya%E5%8D%A1%E9%A1%BF%E4%BC%98%E5%8C%96/1558688555512.png" alt="图片3"></p><p>关于GPU缓存工作流程的更多内容：</p><p><a href="https://knowledge.autodesk.com/zh-hans/support/maya/learn-explore/caas/CloudHelp/cloudhelp/2018/CHS/Maya-ManagingScenes/files/GUID-C893BE60-6E65-4F36-8005-FD4D1A0E9822-htm.html" target="_blank" rel="noopener">https://knowledge.autodesk.com/zh-hans/support/maya/learn-explore/caas/CloudHelp/cloudhelp/2018/CHS/Maya-ManagingScenes/files/GUID-C893BE60-6E65-4F36-8005-FD4D1A0E9822-htm.html</a></p></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;针对美术制作的-Maya-卡顿优化&quot;&gt;&lt;a href=&quot;#针对美术制作的-Maya-卡顿优化&quot; class=&quot;headerlink&quot; title=&quot;针对美术制作的 Maya 卡顿优化&quot;&gt;&lt;/a&gt;针对美术制作的 Maya 卡顿优化&lt;/h1&gt;&lt;h2 id=&quot;CPU&quot;&gt;&lt;a href=&quot;#CPU&quot; class=&quot;headerlink&quot; title=&quot;CPU&quot;&gt;&lt;/a&gt;CPU&lt;/h2&gt;&lt;h3 id=&quot;信息获取&quot;&gt;&lt;a href=&quot;#信息获取&quot; class=&quot;headerlink&quot; title=&quot;信息获取&quot;&gt;&lt;/a&gt;信息获取&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;解释分析器&lt;/li&gt;
+&lt;li&gt;求值工具包&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;GPU&quot;&gt;&lt;a href=&quot;#GPU&quot; class=&quot;headerlink&quot; title=&quot;GPU&quot;&gt;&lt;/a&gt;GPU&lt;/h2&gt;&lt;h3 id=&quot;信息获取-1&quot;&gt;&lt;a href=&quot;#信息获取-1&quot; class=&quot;headerlink&quot; title=&quot;信息获取&quot;&gt;&lt;/a&gt;信息获取&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Viewport 2.0,必须拥有正确的图形配置和图形驱动程序版本。有关 Maya 认证显卡和最新驱动程序版本的信息：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://knowledge.autodesk.com/certified-graphics-hardware&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://knowledge.autodesk.com/certified-graphics-hardware&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;GPU 内存&lt;/p&gt;
+&lt;p&gt;对于包含大量纹理、几何体或缓存动画的场景，请务必记下显卡上可用的 GPU RAM 量，如果 GPU RAM 使用量非常接近显卡的 GPU RAM 限制，纹理可能无法加载，并且场景可能显示为着色模式。此时将显示一条错误信息，指明已超出纹理 RAM 限制并建议您减小“最大纹理分辨率”(Max Texture Resolution)钳制。&lt;/p&gt;
+&lt;p&gt;查看 GPU 内存使用情况（以 MB 为单位），请使用Mel命令 &lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="Maya" scheme="http://yoursite.com/tags/Maya/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Hexo博客如何插入图片</title>
     <link href="http://yoursite.com/2020/03/09/%E5%9B%BE%E7%89%87%E6%B5%8B%E8%AF%95/"/>
     <id>http://yoursite.com/2020/03/09/%E5%9B%BE%E7%89%87%E6%B5%8B%E8%AF%95/</id>
