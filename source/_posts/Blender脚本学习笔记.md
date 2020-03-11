@@ -1,4 +1,9 @@
-# Blender脚本学习笔记
+---
+title: Blender脚本学习笔记
+date: 2020-03-10 19:14:04
+tags: blender
+---
+
 
 ### 编辑器
 

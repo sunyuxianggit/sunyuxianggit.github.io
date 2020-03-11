@@ -1,9 +1,14 @@
-# Houdini 学习笔记
+---
+title: Houdini 学习笔记
+date: 2019-12-01 22:53:13
+tags: Houdini
+---
+
 
 ## 软件结构
 我们可以看到，houdini是一个将各种独立的语境（context）融合在一起的操作系统。
 ![](Houdini_Entagma_学习笔记/2020-03-04-14-02-15.png)
-
+<!-- more -->
 ## 几何对象
 
 ### 层次
@@ -12,6 +17,7 @@
 2. Primitive 几何对象中的组成部件，比如一个三角面片，一张NURBS曲面，或Volume；
 3. Point 几何对象上面的一个点；
 4. Vertex 一个Point可能同时存在于多个相邻的Primitive上，因此共享同一个Point的 多个primitive会各自存一份对Point的引用，称为Vertex。
+
 ### 属性优先级
 
 ![](Houdini_Entagma_学习笔记/2020-03-04-16-03-43.png)

@@ -4,7 +4,7 @@ date: 2020-03-10 19:14:04
 tags: computer graphics
 ---
 
-# GameCourse101
+
 计算机图形学入门 课程学习笔记
 ## 第一节 引入
 ## 第二节 线性代数
@@ -12,7 +12,8 @@ tags: computer graphics
 
 向量是带有方向的量  
 重要的两个量是方向和长度  
-![](GameCourse101/2020-03-08-12-49-03.png)  <!-- more -->
+![](GameCourse101/2020-03-08-12-49-03.png)  
+<!-- more -->
 数学： 向量  
 物理： 矢量  
 向量长度：  

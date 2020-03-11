@@ -1,7 +1,7 @@
 ---
 title: 使用hexo创建个人blog网页的笔记
 date: 2019-12-01 22:53:13
-tags: 个人笔记
+tags: hexo
 ---
 
 ## 安装支持软件

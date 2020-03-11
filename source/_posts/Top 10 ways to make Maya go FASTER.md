@@ -1,6 +1,10 @@
 
+---
+title: Top 10 ways to make Maya go FASTER
+date: 2019-12-01 22:53:13
+tags: maya
+---
 
-# Top 10 ways to make Maya go FASTER
 
 ## 1关闭一些显示设置：
 

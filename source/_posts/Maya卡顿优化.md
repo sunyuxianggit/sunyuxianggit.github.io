@@ -5,7 +5,7 @@ tags: Maya
 ---
 
 
-# 针对美术制作的 Maya 卡顿优化
+针对美术制作的 Maya 卡顿优化
 
 ## CPU
 
