@@ -98,16 +98,24 @@ tags: hexo
    
 6. 常见错误：
 
-   fatal: in unpopulated submodule '.deploy_git'
+   * fatal: in unpopulated submodule '.deploy_git'
 
-   这种情况可以先安装下相关的依赖：
+      这种情况可以先安装下相关的依赖：
 
-   ```
-   $ npm install hexo-deployer-git –save
-   $ rm -rf .deploy_git#删掉
-   $ hexo g
-   $ hexo d#重新生成和部署
-   ```
+      ```
+      $ npm install hexo-deployer-git –save
+      $ rm -rf .deploy_git#删掉
+      $ hexo g
+      $ hexo d#重新生成和部署
+      ```
+   * 执行hexo inint 命令报错hexo:无法加载文件.....\npm\hexo.psl，因为在此系统中禁止运行脚本
+   https://blog.csdn.net/JONE_WUQINGJIANG/article/details/103044919
+   * 安装hexo后，初始化博客，出现bash: hexo: command not found
+   找到C:\Users\Administrator\AppData\Roaming\npm\node_modules\hexo\bin\，将此目录新增到path环境变量中(注：Administrator改成你自己的账户名)
+
+   * 重新安装hexo `npm install -g hexo-cli `如果出现如下错误
+   https://blog.csdn.net/liting1996/article/details/79612248
+   * 重新安装npm `npm install -g npm`
 
    
 
@@ -124,7 +132,7 @@ tags: hexo
 2. 使用git clone 功能 clone喜欢的主题
 
    ```
-   $ git clone https://github.com/litten/hexo-theme-yilia.git themes/yilia
+   $ git clone https://github.com/Molunerfinn/hexo-theme-melody.git
    ```
 
 3. 修改配置文件

@@ -26,6 +26,7 @@ tags: Git
    $ git log #查看日志
    $ git remote add origin https://github.com/sunyuxianggit/sunyuxianggit.github.io.git #预提交到远端仓库（关联本地和远程仓库）
    $ git push -u origin master
+   $ git reset --hard HEAD^^ #一个^就是前一个版本两个就是前两个版本
    ```
 
 ##### 3. 常见报错
