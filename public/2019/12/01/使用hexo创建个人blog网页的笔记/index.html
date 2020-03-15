@@ -59,12 +59,19 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo doploy#部署到GitHub</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>常见错误：</p>
-<p>fatal: in unpopulated submodule ‘.deploy_git’</p>
-<p>这种情况可以先安装下相关的依赖：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git –save</span><br><span class="line">$ rm -rf .deploy_git#删掉</span><br><span class="line">$ hexo g</span><br><span class="line">$ hexo d#重新生成和部署</span><br></pre></td></tr></table></figure>
-
-
-
+<ul>
+<li><p>fatal: in unpopulated submodule ‘.deploy_git’</p>
+<p> 这种情况可以先安装下相关的依赖：</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git –save</span><br><span class="line">$ rm -rf .deploy_git#删掉</span><br><span class="line">$ hexo g</span><br><span class="line">$ hexo d#重新生成和部署</span><br></pre></td></tr></table></figure></li>
+<li><p>执行hexo inint 命令报错hexo:无法加载文件…..\npm\hexo.psl，因为在此系统中禁止运行脚本<br><a href="https://blog.csdn.net/JONE_WUQINGJIANG/article/details/103044919" target="_blank" rel="noopener">https://blog.csdn.net/JONE_WUQINGJIANG/article/details/103044919</a></p>
+</li>
+<li><p>安装hexo后，初始化博客，出现bash: hexo: command not found<br>找到C:\Users\Administrator\AppData\Roaming\npm\node_modules\hexo\bin\，将此目录新增到path环境变量中(注：Administrator改成你自己的账户名)</p>
+</li>
+<li><p>重新安装hexo <code>npm install -g hexo-cli</code>如果出现如下错误<br><a href="https://blog.csdn.net/liting1996/article/details/79612248" target="_blank" rel="noopener">https://blog.csdn.net/liting1996/article/details/79612248</a></p>
+</li>
+<li><p>重新安装npm <code>npm install -g npm</code></p>
+</li>
+</ul>
 </li>
 </ol>
 <h2 id="日常更新文章"><a href="#日常更新文章" class="headerlink" title="日常更新文章"></a>日常更新文章</h2><ol>
@@ -76,7 +83,7 @@
 <li><p>命令行进入blog</p>
 </li>
 <li><p>使用git clone 功能 clone喜欢的主题</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;litten&#x2F;hexo-theme-yilia.git themes&#x2F;yilia</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;Molunerfinn&#x2F;hexo-theme-melody.git</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改配置文件</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https:&#x2F;&#x2F;hexo.io&#x2F;plugins&#x2F;</span><br><span class="line">## Themes: https:&#x2F;&#x2F;hexo.io&#x2F;themes&#x2F;</span><br><span class="line">theme: yilia#这里</span><br></pre></td></tr></table></figure>
