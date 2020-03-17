@@ -6,13 +6,17 @@ tags: SubstancePainter
 
 # Substance Painter Plugin 学习笔记
 
-## First steps
+## 核心思路
 
-核心思路：
 ![](SubstancePainter-Plugin-Study-Notes/2020-03-13-21-25-23.png)
 <!-- more -->
 
-### Plugin skeleton
+## 需要了解学习的模块
+
+### Qml文件
+文档： Substance Painter打开 Help-Docmentation-Scripting API
+[UI](https://doc.qt.io/qt-5/qtquick-index.html)
+#### 插件骨骼
 
 ```Js
 import QtQuick 2.2
@@ -174,7 +178,7 @@ Example:
 }
 ```
 
-## Custom UI
+#### 定制UI
 
 ```js
 import QtQuick 2.2
@@ -232,157 +236,9 @@ Item {
 }
 ```
 
-## Javascript API
-Namespace: alg
+#### Javascript API
 
-### alg.Members
-<static> documents_directory 当前substance 文件所在文件夹路径
-Properties:
-Name                Type    Description
-documents_directory string  Path to Substance Painter documents folder
-
-
-<static> plugin_root_directory 当前插件所在文件夹路径
-Properties:
-Name                    Type    Description
-plugin_root_directory   string  Root directory of the plugin
-
-<static> version
-Properties:
-Name            Type    Description 
-version.api     string  JavaScript api version 当前javascript api 版本
-version.painter string  Substance Painter version 当前substance painter 版本
-
-### alg. baking 
-管理已打开项目的烘培
-
-<static> bake(textureSetName)
-烘焙具有当前烘焙参数的纹理集的贴图
-Parameters:
-Name            Type    Description
-textureSetName  string  The texture set name
-
-Throws:
-alg.baking.BakingError
-
-<static> commonBakingParameters()
-从当前的项目里获得通用烘培设置
-Throws:
-alg.baking.BakingError
-Returns:
-The baking parameters as a JSON object
-Type
-object
-Example
-```js
-// Form of the common baking parameters
-     {
-        commonParameters: {
-          Apply_Diffusion: true,
-          Dilation_width: 1,
-          Output_Size: [9, 9]
-        },
-        detailParameters: {
-          Antialiasing: "None",
-          Average_Normals: true,
-          Cage_File: "",
-          High_Definition_Meshes: [],
-          High_poly_mesh_suffix: "_high",
-          Ignore_Backface: true,
-          Low_poly_mesh_suffix: "_low",
-          Match: "Always",
-          Max_Frontal_Distance: 0.01,
-          Max_Rear_Distance: 0.01,
-          Relative_to_Bounding_Box: true,
-          Use_Cage: false
-        }
-      }
-```
-
-待续
-
-### alg.display
-管理项目的显示设置
-
-<static> getColorLutResource()
-获得当前项目的色彩配置LUT的URL
-
-<static> getEnvironmentResource()
-获得当前项目的environment map的URL
-
-<static> setColorLutResource(newUrl)
-设置当前项目的颜色配置文件lut的URL
-
-<static> setEnvironmentResource(newUrl)
-设置当前项目的环境图的URL
-
-### alg.ui
-Ui 实用程序
-
-<static> addDockWidget(qmlFileUrl)
-从qml文件创建小部件，然后将其作为“停靠小部件”添加到主窗口
-Name        Type    Description
-qmlFileUrl  string  qml file to be loaded. Can be an absolute url or a path relative to the plugin directory.
-
-
-<static> addToolBarWidget(qmlFileUrl)
-从qml文件创建小部件，然后将其作为“工具栏”添加到主窗口。
-Name        Type    Description
-qmlFileUrl  string  qml file to be loaded. Can be an absolute url or a path relative to the plugin directory.
-
-<static> addWidgetToPluginToolBar(qmlFileUrl)
-从qml文件创建小部件，然后将其添加到插件工具栏。
-Name        Type    Description
-qmlFileUrl  string  qml file to be loaded. Can be an absolute url or a path relative to the plugin directory.
-
-<static> clickButton(name)
-Simulate a click on a button.
-
-Name    Type    Description
-name    string  the object name of the button
-
-
-
-### alg. subprocess
-
-Spawn new processes. All processes are started from the plugin root directory.
-产生新进程。,所有进程均从插件的根目录启动。
-
-<static> call(command)
-Run command. Wait for command to complete, then return the returncode.
-运行命令,等待命令完成，然后返回返回码
-
-Name	Type	Description
-command	string | Array.<string>	The command to be launched
-
-<static> check_call(command)
-Run command. Wait for command to complete. If the return code was zero then return, otherwise raise an error.
-运行命令,等待命令完成。,如果返回码为零，则返回，否则返回错误。
-
-Name	Type	Description
-command	string | Array.<string>	The command to be launched
-
-<static> check_output(command)
-Run command. Wait for command to complete and return its standard output as a string. Raise an error if the return code is non-zero.
-运行命令。,等待命令完成并以字符串形式返回其标准输出。,如果返回码不为零，则会引发错误
-
-Name	Type	Description
-command	string | Array.<string>	The command to be launched
-
-
-<static> start(command [, callback])
-Start the given command asynchronously.
-异步启动给定命令。
-command	string | Array.<string>		The command to be launched
-callback	alg.subprocess~processEndedCallback	<optional>
-Callback called when the command terminates
-
-
-
-
-
-
-## 例子1
+#### 例子1
 
 substance painter  hello world 窗口
 
@@ -607,7 +463,7 @@ PainterPlugin
 * 这就是向Substance Painter添加基本插件的小例子.
 * ref：http://peterhanshawart.blogspot.com/2017/11/making-hello-world-substance-painter.html
 
-## 例子2
+#### 例子2
 ```
 AlgWindow
 {
@@ -647,4 +503,52 @@ AlgWindow
         }
     }
 }
+```
+
+
+### pysbs模块
+
+[pysbs文档链接](https://docs.substance3d.com/sat)
+
+pysbs模块介绍：pysbs是.sbs文件的Python API，pysbs提供了无需使用Substance Designer应用程序即可生成或修改物质的方法，只需使用Python编写脚本即可。
+
+它有两个主要组件:
+* 命令行工具.这是一组命令行工具，用于烘焙网格物体的图，对物质进行简单的修改，创建物质档案并绘制图。
+* Pysbs-Python API，Python API是一个python软件包，用于读取和修改sbs文件，例如从多种物质组装复合材料或在文件中批量重命名节点。
+
+
+
+##### 例子
+批量修改sbs文件的图表尺寸
+```py
+from pysbs import context, substance, sbsenum
+
+sbs_mtls = [] # Your list of sbs files to process.
+
+def set_sbs_graph_to_relative(sbs_path):
+    # Build doc.
+    ctx = context.Context()
+    sbs_doc = substance.SBSDocument(ctx, sbs_path)
+    sbs_doc.parseDoc()
+   
+    # Get your graph.
+    graph = sbs_doc.getSBSGraphList()[0]
+   
+    # Change the outputsize inheritance value.
+    # Bug: The aRelativeTo argument doesn't appear to do anything.
+    #
+    # https://docs.substance3d.com/sat/pysbs-python-api/api-content/libraries/sbsenum
+    graph.setBaseParameterValue(
+        aParameter=sbsenum.CompNodeParamEnum.OUTPUT_SIZE,
+        aParamValue=[sbsenum.OutputSizeEnum.SIZE_1, sbsenum.OutputSizeEnum.SIZE_1],
+        aRelativeTo=sbsenum.ParamInheritanceEnum.PARENT
+    )
+   
+    # Save pkg.
+    sbs_doc.writeDoc()
+   
+for pkg in sbs_mtls:
+    set_sbs_graph_to_relative(pkg)
+   
+
 ```
