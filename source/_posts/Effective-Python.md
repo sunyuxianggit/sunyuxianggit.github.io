@@ -292,13 +292,65 @@ for name, count in zip(names, letter):
 * itertools 内置模块中的zip_longest函数可以平行的遍历多个迭代器，而不用在乎它们的长度是否相等。
 
 
-### 不要在for和while循环后面写else语块
+### 第十二条
+不要在for和while循环后面写else语块
 
 * python 有种特殊语法，可在 for及 while 循环的内部语句块之后紧跟一个else块。
 * 只有当整个循环主体都没遇到break语句时，循环后面的else块才会执行。
 * 不要再循环后面使用else块，因为在这种写法即不直观，又容易引人误解。
+### 第十三条
+合理利用try/except/else/finally 结构中的每个代码块
+异常处理可能要考虑四种不同的时机，
+1.finally块
+如果既要向上传播，又要在异常发生时执行清理工作，那就可以使用try/finally结构 
+```py
+handle = open("/tmp/data.txt")   #May raise IOError
+try:
+    data = handle.read()         #May raise unicodeDecodeError
+finally:
+    handle.close()               #Always runs after try:
+```
+read方法抛出异常会向上传播给调用方，而finally块中的handle.close方法则一定能够执行。open方法放到try块外面是因为如果打开文件发生异常，那么程序应该跳过finally块。
+2. else块
+try/except/else结构可以清晰的描述出哪写异常会由自己的代码来处理，哪写异常会传播到上一级。如果try没有发生异常，那么就执行else块。
+```py
+def load_json(data,key):
+    try:
+        result_dict = json.loads(data) #May raise ValueError
+    except ValueError as e:
+        raise KeyError from e
+    else:
+        return result_dict[key]        #May raise KeyError
+```
+如果数据不是有效的json格式，那么会产生ValueError，这个异常会由except块来捕获处理并处理，如果能够执行，就会执行else里面的查找语句，如何查找执行有异常，那么该异常就会向上传播，因为查询语句并不在try范围内，这种else子句会把try/except后面的内容和except块本身区分开，使异常的传播行为变得更加清晰。
 
-
+3. 混合使用
+要从文件中读取某项事务的描述信息，处理该事务，然后就地更新该文件。
+```py
+UNDEFINED = object()
+def divide_json(path):
+    handle = open(path,"r+")
+    try:
+        data = handle.read()
+        op = json.loads(data)
+        value = (op["numrator"]/op["denominator])
+    except ZeroDivisionError as e:
+        return UNDEFINED
+    else:
+        op["result"] = value
+        result = json.dumps(op)
+        handle.seek(0)
+        handle.write(result)
+        return value
+    finally:
+        handle.close()
+```
+使用try快读取文件并处理内容，用except块来对应try块中可能发生的异常，用else块实时更新文件，并把更新中可能出现的异常回报给上级代码，然后用finally块来清理文件句柄。
+即使else块写入发生异常，finally也能关闭句柄。
+Tips:
+1. 无论try块是否发生异常，都可以利用try/finally复合语句块来执行清理工作。
+2. else块可以用来缩减try块中的代码量，并把没发生异常时所要执行的语句与try/except代码块
+3. 顺利运行try之后，若想时某些操作能在finally块清理代码之前执行，则可以将这些操作写到else块中（这种写法必须由except块）。
 
 
 ### 引用
