@@ -352,6 +352,230 @@ Tips:
 2. else块可以用来缩减try块中的代码量，并把没发生异常时所要执行的语句与try/except代码块
 3. 顺利运行try之后，若想时某些操作能在finally块清理代码之前执行，则可以将这些操作写到else块中（这种写法必须由except块）。
 
+### 第十四条
+函数：尽量用异常来表示特殊情况，而不要返回None。
+编写功能函数（utility function）的时候，令函数返回None，可能会使调用它的人在判断返回值的时候写出错误的代码，有两种解决办法。
+1. 把返回值拆成两个部分，第一部分返回操作是否成功，第二部分返回操作结果。
+2. 把异常抛给上一级，使得调用者必须应对它
+
+### 第十五条
+函数：了解如何在闭包里使用外围作用域中的变量
+假如有一份列表，其中的元素都是数值，现在要对其排序，但排序时，要把出现在某个群组内的数字，放在群组外的那些数字之前。
+```py
+def sort_priority(values,group):
+    def helper(x):
+        if x in group:#注意这里helper函数直接访问了sort_priority的参数group
+            return (0,x)
+        return (1,x)
+    values.sort(key = helper)#注意这里把函数helper当作参数传递给了 sort函数
+numbers = [8,3,1,2,5,4,7,6]
+group = {2,3,5,7}
+sort_priority(numbers,group)
+print(numbers)
+```
+这个函数之所以能够正常运作，是基于下列三个原因：
+1. python 支持（closure）：闭包是一种定义在某个作用域中的函数，这种函数引用了那个作用域里面的变量。helper函数之所以能够访问sort_priority的group参数，就因为它是闭包。
+2. python的函数是一级对象(first-class object)，也就是说我们可以直接 引用函数、把函数赋给变量、把函数当作参数传给其他函数，并通过表达式及if语句对其进行比较和判断，等等。于是我们可以把helper这个闭包函数，传给sort方法的key参数。
+3. python使用特殊的规则来比较两个元组，它首先比较各元组下标为0的对应元素，如过相等，再比较下标为1的对应元素，如果还是相等，那就继续比较下标为2的对应元素，以此类推。
+
+当函数中引用变量时，python解释器将按如下顺序遍历各作用域，以解析该引用。
+1. 当前函数的作用域
+2. 任何外围作用域（例如，包含当前函数的其他函数）
+3. 包含当前代码的那个模块的作用域（也叫global scope 全局作用域）
+4. 内置作用域（也就是包含len及str等内置函数的那个作用域）
+
+python3 中有一种特殊的写法，能够获取闭包内的数据。我们可以用nonlocal语句来表明这样的意图，也就是，给相关变量赋值的时候，应该在上层作用域中查找该变量。nonlocal 的唯一限制在于，它不能延申到模块级别，这是为了防止它污染全局作用域。它与global语句互为补充。global用来表示对该变量的赋值操作，将会直接修改模块作用域里的那个变量。
+python2 里不支持nonlocal关键字。
+python2 可以利用可变数据赋值来利用作用域规则来解决。found[0] = True。
+Tips：
+1. 对于定义在某作用域内的闭包来说，它可以引用这些作用域的变量。
+2. 使用默认方式对闭包内的变量赋值，不会影响外围作用域中的同名变量。
+3. 在python3，程序可以在闭包内用nonlocal语句来修饰某个名称，使该闭包能够修改外围作用域中的同名变量。
+4. 在python2中， 程序可以使用可变值（例如，包含单个元素的列表）来实现与nonlocal语句相仿的机制。
+5. 除了那种比较简单的函数，建立不要用nonlocal语句
+
+### 第十六条
+函数：考虑用生成器来改写直接返回列表的函数
+如果函数要产生一系列结果，那么最简单的做法就是把这些结果都放在一份列表里，并将其返回给调用者。
+
+```py
+def index_words(text):
+    result = []
+    if text:
+        result.append(0)
+    for index, letter in enumerate(text):
+        if letter  ==" ":
+            result.append(index + 1)
+    return result
+
+address = "Four score and  seven years ago..."
+result = index_words(address)
+print(result[:3])
+```
+
+但是这样做的弊端在于，它在返回前，要把所有结果都放到列表里，如果输入量很大，那么程序可能会占用大量内存而崩溃，如果使用生成器，则可以应对任意长度的输入数据。
+所以我们可以考虑使用生成器（generator）。**生成器指的是使用yield表达式的函数** 
+调用生成器函数时，它并不会真的运行，而是会返回**迭代器**。
+每次在这个**迭代器**上面调用内置的next函数时，**迭代器会把生成器推进到下一个yield表达式那里**。
+生成器函数传给yield的每一个值，都会由迭代器返回给调用者。
+
+```py
+def index_words_iter(text):
+    """
+    这个函数可以跟之前的那个达到一样的目的，并且更简洁
+    """
+    if text:
+        yield 0
+    for index, letter in enumerate(text):
+        if letter == " ":
+            yield index +1
+
+def index_file(handle):
+    """
+    依次读入各行内容，然后逐个处理每行中的单词，并产生对应的结果。该函数执行时所耗的内存，由单行输入值的最大字符数来界定。
+    """
+    offset = 0 
+    for line in handle:
+        if line:
+            yield offset
+        for letter in line:
+            offst += 1
+            if letter ==" ":
+                yield offset
+```
+
+Tips：
+1. 使用生成器比把收集到的结果放入列表里返回给调用者更加清晰
+2. 由生成器函数所返回的那个迭代器，可以把生成器函数体中，传给yield表达式的那些值，逐次产生出来
+3. 无论输出量有多大，生成器都能产生一系列输出，因为这些输入量和输出量都不会影响它在执行时所耗的内存
+
+### 第十七条
+函数：在参数上面迭代时，要多加小心
+如果函数接受的参数是个对象列表，那么很有可能要在这个列表上多次迭代。
+```py
+def normalize(numbers):
+    total = sum(numbers)
+    result = []
+    for value in numbers:
+        # 注意这里，迭代器只能产生一轮结果。在抛出过StopIteration异常的迭代器或生成器上面继续迭代第二轮，是不会有结果的。
+        print(value)
+        percent = 100 * value/total
+        result.append(percent)
+    return result
+
+def read_visits(data_path):
+    with open(data_path) as f:
+        for line in f:
+            yield int(line)
+# it = read_visits("Learn_python\my_numbers.txt")
+# percentages = normalize(it)
+# print(percentages)
+
+def normalize_copy(numbers):
+    numbers = list(numbers)# 注意这里，为了解决这个问题，我们可以明确的使用该迭代器制作一份列表。
+    #但是迭代器可能含有大量输入数据，从而导致程序在复制迭代器的时候耗尽内存并崩溃
+    total = sum(numbers)
+    result = []
+    for value in numbers:
+        print(value)
+        percent = 100 * value/total
+        result.append(percent)
+    return result
+# it = read_visits("Learn_python\my_numbers.txt")
+# percentages = normalize_copy(it)
+# print(percentages)
+
+
+class ReadVisits(object):
+    def __init__(self, data_path):
+        self.data_path = data_path
+    def __iter__(self):
+        with open(self.data_path) as f:
+            for line in f:
+                yield int(line)
+
+# visits = ReadVisits("Learn_python\my_numbers.txt")
+# percentages = normalize(visits)
+# # normalize函数中的sum方法会调用ReadVisits.__iter__,从而得到新的迭代器对象，而调整数值所用的那个for循环，也会调用__iter__,
+# print(percentages)
+
+def normalize_defensive(numbers):
+    # 判断传入的实参是否是容器
+    if iter(numbers) is iter(numbers):
+        raise TypeError("Must supply a container")
+    total = sum(numbers)
+    result = []
+    for value in numbers:
+        print(value)
+        percent = 100 * value/total
+        result.append(percent)
+    return result
+```
+Tips
+1. 函数在输入的参数上面多次迭代的时候要小心，如果参数是迭代器，那么可能会导致奇怪的行为并错失某些值。
+2. Python的迭代器协议，描述了容器和迭代器应该如果与iter和next内置函数、for循环及相关表达式相互配合。
+3. 把__iter__方法实现为生成器，即可定义自己的容器类型。
+4. 想判断某个值是迭代器还是容器，可以拿该值为参数，两次调用iter，若结果相同，则是迭代器，调用内置的next函数，即可令该迭代器前进一步。
+
+### 第十八条
+函数： 用数量可变的位置参数减少视觉杂讯
+令函数接受可选的位置参数（由于这种参数习惯上写为*args，所以又称为star args，星号参数），能够使代码更加清晰，并能减少视觉杂讯（visual noise）。
+```py
+def log(message, value):
+    if not values:
+        print(message)
+    else:
+        values_str = ", ".join(str(x) for x in value)
+        print("%s:%s"%(message, values_str))
+log("My numbers are",[1,2])
+log("Hi there",[])#只想打印一条消息，调用者也必须像上面那样，即麻烦又杂乱。
+
+def log(message, *value):#注意这里加了个*号
+    if not values:
+        print(message)
+    else:
+        values_str = ", ".join(str(x) for x in value)
+        print("%s:%s"%(message, values_str))
+log("My numbers are",[1,2])
+log("Hi there")#这样就好多了
+#如果要把已有列表传给像log这种带有变长参数的函数，那么调用的时候可以给列表前面加上*符号。
+favorites = [7, 33, 99]
+log("favorites colors",*favorites)
+
+```
+长度可变的位置参数有两个问题：
+1. 变长参数在传给函数时，总是要先转换成元组，如果是用带有*操作符的生成器为参数，来调用函数，python就必须要先把该生成器完整的迭代一轮，这可能会消耗大量内存，引起程序崩溃。
+    ```py
+    def my_generator():
+        for i in range(10):
+            yield i 
+    def my_func(*args):
+        print(args)
+    it = my_generator()
+    my_func(*it)
+    # (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+    ```
+2. 如果要添加新的位置参数，那就必须修改原先调用该函数的那些旧代码。
+
+Tip:
+1. 在def语句中使用*args，即可令函数接收数量可变的位置参数。
+2. 调用函数时，可以采用*操作符，把序列中的元素当作位置参数，传给该函数
+3. 对生成器使用*操作符，可能导致程序耗尽内存而崩溃，
+4. 在已经接收 *args参数的函数上面添加位置参数，可能会产生难以排查的BUG。
+
+
+### 第十九条
+函数：用关键字参数来表达可选的行为
+Tips
+1. 函数参数可以按位置或者关键字来指定
+2. 只使用位置参数来调用函数，可能会导致这些参数值的含义不够明确，而关键字参数则能够阐明每个参数的意图。
+3. 给函数添加新的行为时，可以使用带默认值的关键字参数，以便与原有的函数调用代码保持兼容。
+4. 可选的关键字参数，总是应该以关键字形式来指定，而不应该以位置参数的形式来指定。
+
+
+
+
+
 
 ### 引用
 https://www.cnblogs.com/lipandeng/p/11162039.html
