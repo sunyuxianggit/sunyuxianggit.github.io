@@ -568,15 +568,357 @@ Tip:
 函数：用关键字参数来表达可选的行为
 Tips
 1. 函数参数可以按位置或者关键字来指定
-2. 只使用位置参数来调用函数，可能会导致这些参数值的含义不够明确，而关键字参数则能够阐明每个参数的意图。
+2. 只使用位置参数来调用函数，可能会 导致这些参数值的含义不够明确，而关键字参数则能够阐明每个参数的意图。
 3. 给函数添加新的行为时，可以使用带默认值的关键字参数，以便与原有的函数调用代码保持兼容。
 4. 可选的关键字参数，总是应该以关键字形式来指定，而不应该以位置参数的形式来指定。
 
+### 第二十条
+函数：用None和文档字符串来描述具有动态默认值的参数
+```python
+def log(message,when = datetime.now()):
+    print("%s: %s"%(when, message))
+
+# 合适调用这个函数when参数都是一个固定的值
+# 而不是想要的动态值
+```
+
+
+函数参数的默认值会在每个模块加载进来的时候求出，而很多模块都是在程序启动时加载的，包含这段代码的模块一旦加载尽量，参数的默认值就固定不变了。
+在python若想实现动态默认值，习惯上是把 参数设为None，并在文档字符串（docstring）里面把None所对应的实际行为描述出来。
+
+```python
+def log(message,when = None):
+    when = datatime.now() if when is None else when
+    print("%s: %s"%(when, message))
+
+# 合适调用这个函数when参数都是一个固定的值
+# 而不是想要的动态值
+```
+Tips:
+1. 参数的默认值，只会在程序加载模块并督导本函数的定义时评估一次，对于{}或者[]等动态的值，这可能导致奇怪的行为
+2. 对于以动态值作为实际默认值的关键字参数来说，应该把形式上的默认值写为None，并在函数的文档字符串里面描述该默认值所对应的实际行为。
+
+### 第二十一条
+函数：用只能以关键字形式指定的参数来确保代码明晰
+Tips：
+1. 关键字参数能够使函数函数调用的意图更加明确
+2. 对于各参数之间很容易混淆的函数，可以声明只能以关键字形式指定的参数，以确保调用者必须通过关键字来指定它们。对于接受多个Boolean标志的函数，更应该这样做。
+3. python3 有明确的语法来定义这种只能以关键字形式指定的参数（positional_argument ,*,关键字参数）
+4. python2 函数可以接受 **kwargs, 并手动抛出TypeError异常，以便模拟以关键字形式来指定的参数
+
+### 第二十二条
+类与继承：尽量用辅助类来维护程序的状态，而不要用字典和元组
+
+如果要把许多学生的成绩记录下来：
+```python
+class SimpleGradebook(object):
+    def __init__(self):
+        self._grades = {}
+    def add_student(self, name):
+        self._grades[name] = []
+    def report_grade(self, name, score):
+        self._grades[name].append(score)
+    def average_grade(self, name):
+        grades = self._grades[name]
+        return sum(grades)/len(grades)
+
+book = SimpleGradebook()
+book.add_student("Isaac Newton")
+book.report_grade("Isaac Newton",90)
+print(book.average_grade("Isaac Newton"))
+```
+由于字典用起来很方便，所以有可能因为功夫过分膨胀而导致代码出问题。
+例如要扩充SimpleGradebook类，使它能够按照科目来保存成绩。
+```python
+class BySubjectGradebook(object):
+    def __init__(self):
+        self._grades = {} # 字典
+    def add_student(self, name):
+        self._grades[name] = {} # 字典存储键name的字典
+        print(self._grades)
+    def report_grade(self, name, subject, grade):
+        by_subject = self._grades[name]
+        grade_list = by_subject.setdefault(subject, [])
+        grade_list.append(grade)
+        print(self._grades)
+
+
+book = BySubjectGradebook()
+book.add_student("Isaac Newton")
+book.report_grade("Isaac Newton","Math",90)
+book.report_grade("Isaac Newton","Math",30)
+book.report_grade("Isaac Newton","gym",30)
+book.report_grade("Isaac Newton","gym",50)
+
+
+```
+假设现在需求又变了，还要记录各科成绩。
+
+
+```python
+class WeightedGradebook(object):
+    def __init__(self):
+        self._grades = {} # 字典
+    def add_student(self, name):
+        self._grades[name] = {} # 字典存储键name的字典
+        print(self._grades)
+    def report_grade(self, name, subject, socre, weight):
+        by_subject = self._grades[name]
+        grade_list = by_subject.setdefault(subject, [])
+        grade_list.append(grade)
+        print(self._grades)
+
+
+book = BySubjectGradebook()
+book.add_student("Isaac Newton")
+book.report_grade("Isaac Newton","Math",90)
+book.report_grade("Isaac Newton","Math",30)
+book.report_grade("Isaac Newton","gym",30)
+book.report_grade("Isaac Newton","gym",50)
+
+
+```
+假设现在需求又变了，还要记录各科每次成绩所占权重。程序就会变得非常复杂难以理解。  
+这个时候我们可以考虑从字典和元组迁移到类体系了。  
+>>>用来保存程序状态的数据结构一旦变得过于复杂，就应该将其拆解为类，以便提供更为明确的接口，并更好的封装数据。这样做也能够在接口与具体实现之间创建抽象层。  
+
+Tips：
+1. 不要使用包含其他字典的字典，也不要使用过长的元组。
+2. 如果容器中包含简单而又不可变的数据，那么可以先使用namedtuple来表示，待稍后有需要时，再修改为完整的类。
+3. 保存内部状态的字典如果变得比较复杂，那就应该把这些代码拆解为多个辅助类。
 
 
 
+### 第二十三条
+类与继承：简单的接口应该接受函数，而不是类的实例。
+python 有许多内置的API，都允许调用者传入函数，以定制其行为,例如：
+```py
+names = ["Socrates","Archimedes","Plato","Aristotle"]
+names.sort(key = lambda x: (len(x)))
+print(names)
 
+
+import collections
+def log_missing():
+    print("Key added")
+    return 0
+current = {"green":12,"blue":3}
+increments = [("red",5),("blue",17),("orange",9)]
+result = collections.defaultdict(log_missing,current)
+print("before:",dict(result))
+for key,amount in increments:
+    result[key] += amount
+print("After: ",dict(result))
+
+```
+Tips:
+1. 对于连接各种Python组件的简单接口来说，通常应该给其直接传入函数，而不是先定义某个类，然后再传入该类的实例。
+2. Python 中的函数和方法都可以像一级类那样引用，因此它们与其他类型的对象一样，也能够放在表达式里面。
+3. 通过名为__call__的特殊方法，可以使类的实例能够像普通的Python函数那样得到调用。
+4. 如果要用函数来保存状态，那就应该定义新的类，并令其实现__call__方法，而不要定义带状态的闭包。
+
+
+### 第二十四条
+类与继承： 以@Classmethod形式的多态取通用的构建对象
+
+
+### 第二十五条
+类与继承： 用super初始化父类
+初始化父类的传统方法，是在子类里用子类实例直接调用父类的__init__方法。
+```py
+class MyBaseClass(object):
+    def __init__(self,value):
+        self.value = value
+class MyChildClass(MyBaseClass):
+    def __init__(self):
+        MyBaseClass.__init__(self,5)
+```
+这种方法对于简单的继承体系是可行的，但是在许多情况下会出问题。
+1. 多重继承影响。
+如果子类受到了多重继承的影响。 那么直接调用超类的__init__方法，可能会产生无法预知的行为。
+在子类调用__init__的问题之一，使它的调用顺序并不固定。
+```py
+class MyBaseClass(object):
+    def __init__(self, value):
+        self.value = value
+
+
+class TimesTwo(object):
+    def __init__(self):
+        self.value *= 2
+
+
+class PlusFive(object):
+    def __init__(self):
+        self.value += 5
+
+
+class OneWay(MyBaseClass, TimesTwo, PlusFive):
+    def __init__(self, value):
+        MyBaseClass.__init__(self, value)
+        TimesTwo.__init__(self)
+        PlusFive.__init__(self)
+
+
+class AnotherWay(MyBaseClass, PlusFive, TimesTwo):
+    def __init__(self, value):
+        MyBaseClass.__init__(self, value)
+        TimesTwo.__init__(self)
+        PlusFive.__init__(self)
+
+foo = OneWay(5)
+print("(5*2)+5 = ", foo.value)
+
+foo = AnotherWay(5)
+print("(5+5) *2 = ", foo.value)
+# 原因是没有修改超类构造器的调用顺序，还是以前一样。
+
+```
+
+
+钻石型：如果子类继承自两个单独的超类，而那两个超类又继承自同一个公共基类。就构成了菱形结构也叫钻石形继承体系。
+还有一个问题发生在钻石形继承之中.如果多次执行了公共基类构造器方法，从而产生意向不到的行为。
+```py
+class MyBaseClass(object):
+    def __init__(self, value):
+        self.value = value
+
+
+class TimesFive(MyBaseClass):
+    def __init__(self, value):
+        MyBaseClass.__init__(self, value)
+        self.value *= 5
+
+
+class PlusTwo(MyBaseClass):
+    def __init__(self, value):
+        MyBaseClass.__init__(self, value)
+        self.value += 2
+
+
+class ThisWay(TimesFive, PlusTwo):
+    def __init__(self, value):
+        TimesFive.__init__(self, value)
+        PlusTwo.__init__(self, value)
+
+
+foo = ThisWay(5)
+# 因为在调用第二个超类（PlusTwo）的构造器的时候，它会再度调用MyBaseClass.__init__,从而导致self.value重新变成5
+print("(5*5)+2 = ",foo.value )
+```
+
+python2.2 增加了内置的super函数，并且定义类方法的解析顺序，（method resolution order,MRO）,以解决这一问题，MRO以标准的流程来安排超类之间的初始化顺序（深度优先，从左往右），它也保证钻石顶部的哪个公共基类的构造方法指挥运行一次。
+
+
+
+```py
+
+class MyBaseClass(object):
+    def __init__(self, value):
+        self.value = value
+
+
+class TimesFiveCorrect(MyBaseClass):
+    def __init__(self, value):
+        super(TimesFiveCorrect, self).__init__(value)
+        self.value *= 5
+
+
+class PlusTwoCorrect(MyBaseClass):
+    def __init__(self, value):
+        super(PlusTwoCorrect, self).__init__(value)
+        self.value += 2
+
+
+class GoodWay(TimesFiveCorrect, PlusTwoCorrect):
+    def __init__(self, value):
+        super(GoodWay, self).__init__(value)
+ 
+
+
+foo = GoodWay(5)
+print("5*(5+2)=",foo.value)
+#为什么是35而不是27呢？
+#可以看一下这个类的MRO（method resolution order） 
+from pprint import pprint
+pprint(GoodWay.mro())
+```
+
+python3 可以直接忽略super参数：
+`super().__init__(value)`
+
+
+### 第二十六条
+类与继承：只能使用Mix-in 组件制作工具类时进行多重继承
+
+Min-in是一种小型的类，它只定义了其他类可能需要提供的一套附加方法，而不定义自己的实例属性，此外，它也不要求使用者调用自己的__init__构造器。
+
+
+
+```py
+class JsonMixin(object):
+    @classmethod
+    def form_json(cls,data):
+        kwargs = json.loads(data)
+        return cls(**kwargs)
+    def to_json(self):
+        return json.dumps(self.to_dict())
+
+```
+没看懂。略。
+
+### 第二十七条
+类与基础：多用Public属性，少用Private属性。
+对于Python类来说，其属性的可见度只有两种，也就是Public（公开、公共的）和Private（私密、私有的）。
+```py
+class MyObject(object):
+    def __init__(self):
+        self.public_field = 5
+        self.__private_field = 10#这里定义了私有属性
+    def get_private_field(self):#类级别的方法仍然声明在本类的class代码块之内，所以这些方法是可以访问到类的私有属性
+        return self.__private_field
+foo = MyObject()
+assert foo.public_field == 5#断言 
+assert foo.get_private_field() == 10
+foo.__private_field#这里会直接报错
+
+```
+
+例子2
+```py
+class MyOtherObject(object):
+    def __init__(self):
+        self.__private_field =71
+    @classmethod
+    def get_private_field_of_instance(cls,instance):
+        return instance.__private_field
+bar = MyOtherObject()
+assert MyOtherObject.get_private_field_of_instance(bar) == 71
+
+```
+例子2 子类无法访问父类的private属性
+```py
+class MyParentObject(object):
+    def __init__(self):
+        self.__private_field =71
+class MyChildObject(MyParentObject):
+    def get_private_field(self):
+        return self.__private_field
+baz = MyChildObject()
+baz.get_private_field()
+baz._MyParentObject_private_field()
+```
+
+Python会对私有属性的名称最一些简单的变换，以保证private属性的私密性。baz.get_private_field()实际上访问的是_MyChildObject__private_field，父类的私有属性的真实名称实际上是，_MyParentObject__private_field，子类之所以无法访问父类的私有属性，只不过是因为变换后的属性名与待访问的属性名不相符而已。
+了解到这套机制之后，我们就可以从任意类中访问相关类的私有属性了。无论是从该类的子类访问，还是从外部访问，我们都不受制于Private属性的访问权限。
+
+Tip：
+1. Python 编译器无法严格保证private字段的私密性
+2. 不要盲目地将属性设为private，而是应该从一开始就做好规划，并允许子类更多的访问超类内部的API。
+3. 应该多用protected属性，并在文档中把这些字段的合理用法告诉子类的开发者，而不要视图用private属性来限制子类访问这些字段
+4. 只有当子类不受自己控制时，才可以考虑用private属性来避免名称冲突。
 
 ### 引用
 https://www.cnblogs.com/lipandeng/p/11162039.html
 https://lingyunfx.com/?page_id=152
+https://blog.csdn.net/liuskyter/article/details/80371371

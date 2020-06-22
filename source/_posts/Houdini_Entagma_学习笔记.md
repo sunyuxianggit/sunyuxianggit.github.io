@@ -142,6 +142,13 @@ tags: Houdini
     Evaluates a channel (or parameter) and return its value.
     `ch("string");`
 
+* Chramp 样条映射控制面板/斜坡控制/梯度控制
+    Evaluates a ramp parameter and return its value.
+    `ch("string");`
+
+* Chramp and waves （chramp和波纹）
+
+
 * curlnoise 卷曲噪点函数 
     Computes divergence free noise based on Perlin noise.
     `vector  curlnoise(vector xyz);`
@@ -169,13 +176,13 @@ tags: Houdini
 
     int  nearpoint(<geometry>geometry, string ptgroup, vector pt)
 
-    int  nearpoint(<geometry>geometry, string ptgroup, vector pt, float maxdist)```
+    int  nearpoint(<geometry>geometry, string ptgroup, vector pt, float maxdist)
     ```
-```
-    
+
 * nearpoints 查找最近顶点函数 
     Finds the closest point in a geometry. 
-​```c
+
+    ```c
     int [] nearpoints(<geometry>geometry, vector pt, float maxdist)
     
     int [] nearpoints(<geometry>geometry, vector pt, float maxdist, int maxpts)
@@ -183,7 +190,7 @@ tags: Houdini
     int [] nearpoints(<geometry>geometry, string ptgroup, vector pt, float maxdist)
     
     int [] nearpoints(<geometry>geometry, string ptgroup, vector pt, float maxdist, int maxpts)
-```
+    ```
 
 
 * point 从几何体上读取点的某个属性的值函数 
