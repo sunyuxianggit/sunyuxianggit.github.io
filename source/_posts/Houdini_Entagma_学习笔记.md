@@ -387,6 +387,23 @@ tags: Houdini
     <type>[] primintrinsic(<geometry>geometry, string intrinsic_name, int prim_num)
     ```
 
+* dihedral 计算出给定两个向量的旋转矩阵
+    Computes the rotation matrix or quaternion which rotates the vector a onto the vector b.
+    可以返回矩阵也可以返回矢量
+    `matrix3  dihedral(vector a, vector b )`
+    `vector4  dihedral(vector a, vector b)`
+
+* quaternion 把给定的3*3矩阵转换成四元数
+    Creates a vector4 representing a quaternion.
+    `vector4  quaternion(matrix3 rotations)`
+
+* qmultiply 两个四元数相乘
+    Multiplies two quaternions and returns the result.
+    `vector4  qmultiply(vector4 q1, vector4 q2)`
+
+* eulertoquaternion 欧拉角转换成四元数
+    Creates a vector4 representing a quaternion from euler angles.
+    vector4  eulertoquaternion(vector rotations, int order)
 
 ## 常用表达式
 * $FF 帧变量
@@ -417,6 +434,7 @@ tags: Houdini
 
 ## vex语法
 
+
 * for 循环
 
     ```c
@@ -434,7 +452,7 @@ tags: Houdini
     ```
 
 * 条件判断
-    ```
+    ```c
     if(){
         something;
     }
@@ -444,7 +462,7 @@ tags: Houdini
     ```
 
     
-    ```
+    ```c
     if(){
         something;
     }
@@ -456,8 +474,22 @@ tags: Houdini
     }
     ```
 
+* 定义函数
+    ```c
+    function int test(int a, b; string c) {
+        if (a > b) {
+            printf(c);
+        }
+    }
 
 
+    int test(int a, b; string c) {
+        if (a > b) {
+            printf(c);
+            return c;
+        }
+    }
+    ```
 
 ## 外部函数导入和外部编辑器设置
 
