@@ -149,7 +149,19 @@ tags: Houdini
     Evaluates a ramp parameter and return its value.
     `ch("string");`
 
-* Chramp and waves （chramp和波纹）
+* floor  地板函数
+    Returns the largest integer less than or equal to the argument.
+    返回小于或等于参数的最大整数。
+    float|int floor(float n)
+
+* ceil 天花板函数
+    Returns the smallest integer greater than or equal to the argument.
+    返回大于或等于参数的最小整数。
+    float  ceil(float n)
+
+* trunc 删除浮点数的小数部分
+    如果参数为负，则返回ceil（x），否则返回floor（x）。
+    `float  trunc(float x)`
 
 
 * curlnoise 卷曲噪点函数 
@@ -195,6 +207,9 @@ tags: Houdini
     int [] nearpoints(<geometry>geometry, string ptgroup, vector pt, float maxdist, int maxpts)
     ```
 
+* minpos 查找最近函数
+    Finds the closest position on the surface of a geometry.
+    vector  minpos(<geometry>geometry, vector point)
 
 * point 从几何体上读取点的某个属性的值函数 
     Reads a point attribute value from a geometry. 
