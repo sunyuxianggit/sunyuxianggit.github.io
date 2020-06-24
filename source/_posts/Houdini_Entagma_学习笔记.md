@@ -85,9 +85,12 @@ tags: Houdini
     ` printf("str"); `
 
 * addpoint 添加点函数
+    注意有位置和 点号的区别
     ```c
     int  addpoint(int geohandle, int point_number)
+    //使用给定点号使用该点的所有属性和组成员关系来创建一个新点。
     int  addpoint(int geohandle, vector pos)
+    //用给定位置创建一个新点。
     ```
 
 * addprim 添加图元函数 
@@ -411,6 +414,8 @@ tags: Houdini
 * eulertoquaternion 欧拉角转换成四元数
     Creates a vector4 representing a quaternion from euler angles.
     vector4  eulertoquaternion(vector rotations, int order)
+
+* ident 单位矩阵
 
 ## 常用表达式
 * $FF 帧变量
