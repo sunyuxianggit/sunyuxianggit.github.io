@@ -5,6 +5,7 @@ tags: blender
 ---
 
 ### 术语解释
+
 * bpy  
   
 bpy 全称Blender Python API，是blender使用python与系统执行数据交换和功能调用的接口模块。
@@ -140,21 +141,93 @@ Blender嵌入了一个Python解释器，它由Blender启动并保持活跃。这
 
   安装完上面这些，vscode里面就会有自动补全
 
-  Debug
+如何Debug：
 
-- ctrl + shift + P, select "Blender: Start"
+- ctrl + shift + P, 选择 "Blender: Start"
 
 - 选择你的blender安装路径, vscode会连接到blender
 
 - ctrl + shift + P, "Blender: Run script" 并且可以使用断点调试
 
 ### 基础知识
-
+#### 重要信息
 * 所有对象的都存在上下文，以及各种模式及其对应的操作。  
 * 在任何情况下，只有一个物体处于活动状态，并且可以有多个选定对象。  
 * 所有物体都是blend文件中的数据。  
 * 存在创建和修改这些对象的操作/函数。  
 
+#### 模板
+![](2020-08-31-14-52-34.png)
+```py
+import bpy   #提供给附加开发人员的API
+
+
+# bl_info变量，其中包含有关附加组件的信息
+bl_info = {
+    "name": "sample",
+    "author": "syx",
+    "version": (1, 0),
+    "blender": (2, 83, 0),
+    "location": "3D视口>添加>网格",
+    "description": "创建对象的示例附加组件",
+    "warning": "",
+    "support": "TESTING",
+    "wiki_url": "文档位置",
+    "tracker_url": "报告问题",
+    "category": "Object"
+}
+
+
+# 创建对象的运算类（ICO球）
+class SAMPLE21_OT_CreateObject(bpy.types.Operator):#注意这里的继承，继承至Operator
+
+    bl_idname = "object.sample21_create_object"# Blender内部使用的ID
+    bl_label = "球" # 菜单项目中显示的字符串
+    bl_description = "添加ICO Sphere" # 菜单项上显示的说明
+    bl_options = {'REGISTER', 'UNDO'} # 处理属性
+
+    # execute 在该方法中，定义执行菜单时的处理。
+    # 调用该方法时，将从Blender本身传递以下参数
+    # self	operate class	operate class的实例
+    # context	bpy.types.Context	execute 方法执行上下文
+    def execute(self, context):
+        bpy.ops.mesh.primitive_ico_sphere_add(radius=2.0, location=(5.0, -5.0, 0.0), rotation=(0.79, 0.0, 1.57))
+        print("添加ICO球体。")
+
+        return {'FINISHED'}
+
+
+# 构建菜单的功能
+def menu_fn(self, context):
+    self.layout.separator()
+    self.layout.operator(SAMPLE21_OT_CreateObject.bl_idname)
+
+# 要在Blender中注册的类
+classes = [
+    SAMPLE21_OT_CreateObject,
+]
+
+# 加载项激活时的函数
+def register():
+    for c in classes:
+        bpy.utils.register_class(c)
+    bpy.types.VIEW3D_MT_mesh_add.append(menu_fn) # 这里给菜单添加了功能
+    print("Sample已激活")
+
+
+# 禁用附加组件时的处理
+def unregister():
+    bpy.types.VIEW3D_MT_mesh_add.remove(menu_fn)# 这里移除了菜单里添加的功能
+    for c in classes:
+        bpy.utils.unregister_class(c)
+    print("Sample已被禁用")
+
+
+# 初始化
+if __name__ == "__main__":
+    register()# 仅执行附加注册处理
+
+```
 
 
 #### 插件路径
@@ -170,7 +243,7 @@ Blender嵌入了一个Python解释器，它由Blender启动并保持活跃。这
 
 #### 如何查看命令 
 
-- 类似maya 直接执行某个功能，看info输出命令（A+X	清空nfo）
+- 类似maya 直接执行某个功能，看info输出命令（A+X清空info）
 - 选中命令直接 Copy Data Path.
 - 鼠标悬停在某个命令上看提示，如果没有提示，要去perfence里面的interface下勾选Python Tooltips.
 - 控制台直接输入``dir（某个模块名）``查看输出
@@ -273,6 +346,9 @@ dir(bpy.context.active_object.location)#物体位置可以提供的其它功能
 
 [obj for obj in bpy.context.selected_objects if obj != bpy.context.object]# 打印一个不包含当前活动对象的对象列表
 
+
+bpy.context.scene.collection.all_objects# 拿到所有object
+
 ```
 
 
@@ -288,6 +364,13 @@ bpy.data.objects
 for object in bpy.data.objects:
     print(f"{object.name} is ata location {object.location}")
 
+bpy.data.collections["collistion_name"]#  拿到collection  类
+bpy.data.collections["collistion_name"].objects # 拿到collection类下所有objects 
+
+# 遍历collection 下所有物体 
+coll = bpy.data.collections["collistion_name"]
+for ob in coll.objects:
+    print(f"ob name is {ob.name}")
 ```
 
 
